@@ -1,0 +1,237 @@
+# Dashboard setup for Pages CMS (app.pagescms.org)
+# Tip: in any heading, wrap a word in *asterisks* to make it italic.
+media:
+  input: src/assets/uploads
+  output: ../../assets/uploads
+  categories: [image]
+
+content:
+  - name: galleries
+    label: Portfolio galleries
+    type: collection
+    path: src/content/galleries
+    format: yaml-frontmatter
+    filename: "{fields.title}.md"
+    view:
+      fields: [title, category, featured, hidden]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Gallery name
+        type: string
+        required: true
+      - name: category
+        label: Category
+        type: select
+        required: true
+        options:
+          values: [Seniors, Portraits, Couples, Friends & Groups, Milestones]
+      - name: description
+        label: Short description
+        type: text
+      - name: cover
+        label: Cover photo
+        description: Shown on the Portfolio page and homepage.
+        type: image
+        required: true
+      - name: featured
+        label: Show on homepage
+        type: boolean
+      - name: hidden
+        label: Hide this gallery
+        description: Turn on to keep it off the site without deleting it.
+        type: boolean
+      - name: order
+        label: Position
+        description: Lower numbers appear first (1, 2, 3...).
+        type: number
+      - name: photos
+        label: Photos
+        description: Drag to reorder. Alt text describes the photo for screen readers and Google.
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "Photo {index}"
+        fields:
+          - name: image
+            label: Photo
+            type: image
+            required: true
+          - name: alt
+            label: Alt text (short description)
+            type: string
+
+  - name: sessions
+    label: Sessions & pricing
+    type: collection
+    path: src/content/sessions
+    format: yaml-frontmatter
+    filename: "{fields.title}.md"
+    view:
+      fields: [title, price, hidden]
+      primary: title
+      sort: [order, title]
+    fields:
+      - name: title
+        label: Session name
+        type: string
+        required: true
+      - name: summary
+        label: Short description
+        type: text
+      - name: image
+        label: Photo
+        type: image
+      - name: price
+        label: Price
+        type: string
+      - name: duration
+        label: Session length
+        type: string
+      - name: locations
+        label: Locations
+        type: string
+      - name: delivery
+        label: Photo delivery
+        type: string
+      - name: includes
+        label: What's included
+        type: string
+        list: true
+      - name: details
+        label: Additional details
+        type: text
+      - name: order
+        label: Position
+        type: number
+      - name: hidden
+        label: Hide this session
+        type: boolean
+
+  - name: testimonials
+    label: Testimonials
+    type: collection
+    path: src/content/testimonials
+    format: yaml-frontmatter
+    filename: "{fields.name}.md"
+    view:
+      fields: [name, session]
+      primary: name
+      sort: [order, name]
+    fields:
+      - name: quote
+        label: What they said
+        type: text
+        required: true
+      - name: name
+        label: Client name
+        type: string
+        required: true
+      - name: session
+        label: Session type
+        type: string
+      - name: order
+        label: Position
+        type: number
+
+  - name: faq
+    label: FAQ
+    type: collection
+    path: src/content/faq
+    format: yaml-frontmatter
+    filename: "{fields.question}.md"
+    view:
+      fields: [question]
+      primary: question
+      sort: [order, question]
+    fields:
+      - name: question
+        label: Question
+        type: string
+        required: true
+      - name: answer
+        label: Answer
+        type: text
+        required: true
+      - name: order
+        label: Position
+        type: number
+
+  - name: home
+    label: Homepage
+    type: file
+    path: src/content/pages/home.yaml
+    format: yaml
+    fields:
+      - { name: hero_image, label: Big top photo, type: image, required: true }
+      - { name: hero_image_alt, label: Top photo description, type: string }
+      - { name: hero_label, label: Small line above your name, type: string }
+      - { name: hero_heading, label: Big heading (put *asterisks* around a word to italicize it), type: string, required: true }
+      - { name: intro_label, label: Intro small heading, type: string }
+      - { name: intro_text, label: Intro text, type: text }
+      - { name: featured_heading, label: Featured work heading (put *asterisks* around a word to italicize it), type: string }
+      - { name: about_heading, label: About preview heading (put *asterisks* around a word to italicize it), type: string }
+      - { name: about_text, label: About preview text, type: text }
+      - { name: about_image, label: About preview photo, type: image, required: true }
+      - { name: about_image_alt, label: About photo description, type: string }
+      - { name: services_heading, label: Sessions heading (put *asterisks* around a word to italicize it), type: string }
+      - { name: statement_text, label: Statement over photo (leave empty to hide), type: text }
+      - { name: statement_image, label: Statement background photo, type: image }
+      - { name: instagram_heading, label: Instagram section heading, type: string }
+
+  - name: about
+    label: About page
+    type: file
+    path: src/content/pages/about.yaml
+    format: yaml
+    fields:
+      - { name: heading, label: Heading (put *asterisks* around a word to italicize it), type: string, required: true }
+      - { name: photo, label: Your photo, type: image, required: true }
+      - { name: photo_alt, label: Photo description, type: string }
+      - { name: intro, label: Introduction, type: text }
+      - name: sections
+        label: Sections
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - { name: title, label: Section title, type: string, required: true }
+          - { name: text, label: Text, type: text }
+      - { name: second_photo, label: Second photo, type: image }
+      - { name: second_photo_alt, label: Second photo description, type: string }
+      - { name: seo_description, label: Google description, type: text }
+
+  - name: contact
+    label: Contact page
+    type: file
+    path: src/content/pages/contact.yaml
+    format: yaml
+    fields:
+      - { name: heading, label: Heading (put *asterisks* around a word to italicize it), type: string, required: true }
+      - { name: intro, label: Intro text, type: text }
+      - { name: availability, label: Availability note (leave empty to hide), type: string }
+      - { name: seo_description, label: Google description, type: text }
+
+  - name: settings
+    label: Site settings
+    type: file
+    path: src/content/settings/site.yaml
+    format: yaml
+    fields:
+      - { name: business_name, label: Business name, type: string, required: true }
+      - { name: logo, label: Logo (optional; replaces the text wordmark), type: image }
+      - { name: site_title, label: Website title (browser tab and Google), type: string, required: true }
+      - { name: site_description, label: Website description (Google), type: text, required: true }
+      - { name: share_image, label: Preview image when the link is shared, type: image }
+      - { name: announcement, label: Top announcement bar (leave empty to hide), type: string }
+      - { name: location, label: Location, type: string }
+      - name: instagram_username
+        label: Instagram username
+        description: Just the username, without @ (for example verobvisuals). All inquiry buttons open a DM to this account.
+        type: string
+        required: true
+      - { name: email, label: Email (optional; leave empty to keep it off the site), type: string }
