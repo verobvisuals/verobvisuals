@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import PhotoGrid from '../../components/PhotoGrid.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { getGalleries, getSettings, slugify } from '../../lib/data';
+import { emph } from '../../lib/emph';
+
+export async function getStaticPaths() {
+  const galleries = await getGalleries();
+  return galleries.map((g, i) => ({
+    params: { id: g.id },
+    props: { gallery: g, prev: galleries[i - 1], next: galleries[i + 1] },
+  }));
+}
+
+const { gallery, prev, next } = Astro.props;
+const g = gallery.data;
+const s = await getSettings();
+---
+<Base title={g.title} description={g.description || `${g.category} photography by ${s.business_name}.`} image={g.cover}>
+  <header class="page-head container">
+    <a href={`/portfolio#${slugify(g.category)}`} class="eyebrow back">{g.category}</a>
+    <h1 class="title" set:html={emph(g.title)} />
+    {g.description && <p class="lede">{g.description}</p>}
+  </header>
+
+  <section class="container">
+    {g.photos.length ? <PhotoGrid photos={g.photos} id={gallery.id} /> : <p class="center lede" style="margin-inline:auto">Photos coming soon.</p>}
+  </section>
+
+  <section class="section center">
+    <div class="narrow">
+      <p class="eyebrow">Love this session?</p>
+      <h2 class="cta-h">Let's create <em>yours</em></h2>
+      <div class="btn-row" style="margin-top:28px">
+        <a href="/contact" class="btn">Inquire</a>
+        <a href="/sessions" class="btn btn-outline">Sessions &amp; pricing</a>
+      </div>
+    </div>
+  </section>
+
+  {(prev || next) && (
+    <nav class="container pager" aria-label="More galleries">
+      {prev ? <a href={`/portfolio/${prev.id}`} class="prev"><span class="eyebrow">Previous</span><span class="pname">{prev.data.title}</span></a> : <span />}
+      {next ? <a href={`/portfolio/${next.id}`} class="next"><span class="eyebrow">Next</span><span class="pname">{next.data.title}</span></a> : <span />}
+    </nav>
+  )}
+
+  <Lightbox />
+</Base>
+
+<style>
+  .back { text-decoration: none; display: inline-block; padding: 8px 0; }
+  .back:hover { color: var(--mocha); }
+  .title { margin-top: 12px; text-transform: none; letter-spacing: 0.02em; }
+  .cta-h { margin-top: 12px; }
+  .pager { display: flex; justify-content: space-between; gap: 24px; border-top: 1px solid var(--line); padding-block: 32px 8px; }
+  .pager a { display: flex; flex-direction: column; gap: 4px; text-decoration: none; max-width: 45%; }
+  .pager .next { text-align: right; align-items: flex-end; margin-left: auto; }
+  .pname { font-family: var(--serif); font-size: clamp(20px, 2vw, 26px); }
+  .pager a:hover .pname { font-style: italic; }
+</style>

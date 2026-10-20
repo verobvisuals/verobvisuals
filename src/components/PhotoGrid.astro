@@ -1,0 +1,55 @@
+---
+// Justified photo grid: every photo keeps its natural shape, rows line up neatly.
+// Clicking a photo opens it full screen (Lightbox).
+import { Image, getImage } from 'astro:assets';
+
+interface Props {
+  photos: { image: ImageMetadata; alt: string }[];
+  rowHeight?: number;
+  id?: string;
+}
+const { photos, rowHeight = 340, id = 'grid' } = Astro.props;
+const items = await Promise.all(
+  photos.map(async (p) => {
+    const ratio = p.image.width / p.image.height;
+    const full = await getImage({ src: p.image, width: Math.min(2200, p.image.width), format: 'webp', quality: 85 });
+    return { ...p, ratio, full: full.src };
+  })
+);
+---
+<ul class="pgrid" data-lightbox-group={id} style={`--row:${rowHeight}px`}>
+  {items.map((p, i) => (
+    <li style={`--r:${p.ratio.toFixed(4)}`}>
+      <a href={p.full} class="frame" data-lightbox data-index={i} aria-label={`Open photo ${i + 1} of ${items.length}${p.alt ? `: ${p.alt}` : ''}`}>
+        <Image
+          src={p.image}
+          alt={p.alt}
+          widths={[400, 700, 1000, 1400]}
+          sizes={`(max-width: 600px) 100vw, (max-width: 1000px) 60vw, ${Math.round(rowHeight * p.ratio * 1.2)}px`}
+          loading={i < 3 ? 'eager' : 'lazy'}
+          decoding="async"
+          quality={82}
+        />
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .pgrid {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: clamp(8px, 1.2vw, 16px);
+  }
+  .pgrid::after { content: ''; flex-grow: 999999; }
+  .pgrid li {
+    flex-grow: calc(var(--r) * 100);
+    flex-basis: calc(var(--r) * var(--row));
+    min-width: 0;
+  }
+  .pgrid a { display: block; aspect-ratio: var(--r); cursor: zoom-in; }
+  .pgrid img { transition: opacity .3s; }
+  .pgrid a:hover img { opacity: .9; }
+  @media (max-width: 600px) {
+    .pgrid li { flex-basis: calc(var(--r) * 200px); }
+  }
+</style>

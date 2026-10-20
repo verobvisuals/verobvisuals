@@ -1,0 +1,71 @@
+---
+import '@fontsource/cormorant-garamond/400.css';
+import '@fontsource/cormorant-garamond/400-italic.css';
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/jost/300.css';
+import '@fontsource/jost/400.css';
+import '@fontsource/jost/500.css';
+import '../styles/global.css';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getSettings } from '../lib/data';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: ImageMetadata;
+  noindex?: boolean;
+  transparentHeader?: boolean;
+}
+
+const { title, description, image, noindex = false, transparentHeader = false } = Astro.props;
+const s = await getSettings();
+const pageTitle = title ? `${title} | ${s.business_name}` : s.site_title;
+const pageDescription = description || s.site_description;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const shareSrc = image ?? s.share_image;
+const share = shareSrc ? await getImage({ src: shareSrc, width: 1200, height: 630, fit: 'cover', format: 'jpg' }) : undefined;
+const shareUrl = share ? new URL(share.src, Astro.site).href : undefined;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: s.business_name,
+  description: s.site_description,
+  url: Astro.site?.href,
+  ...(s.location ? { areaServed: s.location } : {}),
+  ...(s.instagram_url ? { sameAs: [s.instagram_url] } : {}),
+};
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#f7f3ee" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={s.business_name} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDescription} />
+  <meta property="og:url" content={canonical} />
+  {shareUrl && <meta property="og:image" content={shareUrl} />}
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <Header transparent={transparentHeader} />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>

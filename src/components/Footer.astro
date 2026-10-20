@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import Wordmark from './Wordmark.astro';
+import { getSettings, getGalleries, getPage } from '../lib/data';
+
+const s = await getSettings();
+const home = await getPage('home');
+const galleries = await getGalleries();
+// Photo strip: one photo from each gallery, then fill up to 6
+const pool = galleries.flatMap((g) => g.data.photos.map((p) => p));
+const firsts = galleries.map((g) => g.data.photos[1] ?? g.data.photos[0]).filter(Boolean);
+const strip = [...firsts, ...pool.filter((p) => !firsts.includes(p))].slice(0, 6);
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  {strip.length > 0 && (
+    <section class="strip-wrap" aria-label="Recent work">
+      <div class="strip-head">
+        <p class="eyebrow">{home.instagram_heading}</p>
+        <a class="handle" href={s.instagram.profile} target="_blank" rel="noopener">{s.instagram.handle}</a>
+      </div>
+      <ul class="strip">
+        {strip.map((p) => (
+          <li>
+            <a href={s.instagram.profile} target="_blank" rel="noopener" class="frame hover-zoom" aria-label={`${s.business_name} on Instagram`}>
+              <Image src={p.image} alt={p.alt} widths={[240, 400, 560]} sizes="(max-width: 700px) 33vw, 17vw" loading="lazy" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <div class="footer-main">
+    <div class="container footer-grid">
+      <div class="col brand-col">
+        <a href="/" class="brand" aria-label={`${s.business_name} home`}><Wordmark size="lg" /></a>
+        {s.location && <p class="muted">Photography · {s.location}</p>}
+      </div>
+      <nav class="col" aria-label="Footer">
+        <p class="eyebrow">Explore</p>
+        <a href="/portfolio">Portfolio</a>
+        <a href="/about">About</a>
+        <a href="/sessions">Sessions &amp; pricing</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <div class="col">
+        <p class="eyebrow">Say hello</p>
+        <a href={s.instagram.profile} target="_blank" rel="noopener">Instagram · {s.instagram.handle}</a>
+        {s.email && <a href={`mailto:${s.email}`}>{s.email}</a>}
+        <a href={s.instagram.dm} target="_blank" rel="noopener" class="text-link inquire">Message me on Instagram</a>
+      </div>
+    </div>
+    <div class="container legal">
+      <p>© {year} {s.business_name}. All photographs are the property of {s.business_name}.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .strip-wrap { padding-top: var(--section); }
+  .strip-head { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 28px; text-align: center; }
+  .handle { font-family: var(--serif); font-style: italic; font-size: 26px; text-decoration: none; }
+  .handle:hover { color: var(--mocha); }
+  .strip { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .strip a { display: block; aspect-ratio: 1; }
+  @media (max-width: 700px) { .strip { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .footer-main { background: var(--espresso); color: var(--sand); padding-top: clamp(56px, 7vw, 88px); }
+  .footer-main .eyebrow { color: var(--taupe); margin-bottom: 8px; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding-bottom: 56px; }
+  .col { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+  .col a { text-decoration: none; padding: 4px 0; }
+  .col a:hover { color: var(--white); }
+  .brand { color: var(--ivory); text-decoration: none; }
+  .muted { color: var(--taupe); margin: 14px 0 0; }
+  .inquire { margin-top: 14px; color: var(--ivory); }
+  .legal { border-top: 1px solid rgba(203, 187, 169, .25); padding-block: 24px; font-size: 13px; color: var(--taupe); }
+  .legal p { margin: 0; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr; } }
+</style>

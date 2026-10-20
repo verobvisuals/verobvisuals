@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getSessions, getSettings } from '../lib/data';
+import { emph, paras } from '../lib/emph';
+
+const sessions = await getSessions();
+const s = await getSettings();
+---
+<Base title="Sessions & Pricing" description={`Session types, pricing and what's included with ${s.business_name}.`}>
+  <header class="page-head container">
+    <p class="eyebrow">Sessions &amp; pricing</p>
+    <h1>Choose your <em>session</em></h1>
+    <p class="lede">Every session is relaxed and personal. Find the one that fits, then send me a message on Instagram to check availability.</p>
+  </header>
+
+  <section class="container list">
+    {sessions.map((x, i) => (
+      <article id={x.id} class:list={['session', { flip: i % 2 === 1 }]}>
+        {x.data.image && (
+          <div class="frame media">
+            <Image src={x.data.image} alt="" widths={[500, 800, 1100]} sizes="(max-width: 860px) 90vw, 42vw" loading={i === 0 ? 'eager' : 'lazy'} />
+          </div>
+        )}
+        <div class="body">
+          <h2 set:html={emph(x.data.title)} />
+          {x.data.price && <p class="price">{x.data.price}</p>}
+          {x.data.summary && <p class="lede">{x.data.summary}</p>}
+          <dl class="facts">
+            {x.data.duration && <div><dt>Session length</dt><dd>{x.data.duration}</dd></div>}
+            {x.data.locations && <div><dt>Locations</dt><dd>{x.data.locations}</dd></div>}
+            {x.data.delivery && <div><dt>Photo delivery</dt><dd>{x.data.delivery}</dd></div>}
+          </dl>
+          {x.data.includes.length > 0 && (
+            <div class="includes">
+              <p class="eyebrow">What's included</p>
+              <ul>{x.data.includes.map((it) => <li>{it}</li>)}</ul>
+            </div>
+          )}
+          {x.data.details && <div class="prose details" set:html={paras(x.data.details)} />}
+          <a href={`/contact?session=${encodeURIComponent(x.data.title)}`} class="btn">Inquire about {x.data.title}</a>
+        </div>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .list { display: flex; flex-direction: column; gap: clamp(72px, 9vw, 128px); padding-bottom: var(--section); }
+  .session { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 6vw, 96px); align-items: center; scroll-margin-top: 24px; }
+  .session.flip .media { order: 2; }
+  .media { aspect-ratio: 4 / 5; }
+  .body { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .price { font-family: var(--serif); font-style: italic; font-size: clamp(24px, 2.4vw, 30px); color: var(--mocha); margin: 0; }
+  .facts { margin: 0; width: 100%; border-top: 1px solid var(--line); }
+  .facts div { display: flex; justify-content: space-between; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .facts dd { margin: 0; text-align: right; }
+  .includes ul { margin: 10px 0 0; padding-left: 18px; }
+  .includes li { padding: 2px 0; }
+  .includes li::marker { color: var(--mocha); }
+  .details { color: var(--muted); }
+  .body .btn { margin-top: 8px; }
+  @media (max-width: 860px) {
+    .session { grid-template-columns: 1fr; }
+    .session.flip .media { order: 0; }
+  }
+</style>

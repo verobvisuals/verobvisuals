@@ -1,0 +1,198 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import GalleryCard from '../components/GalleryCard.astro';
+import Testimonials from '../components/Testimonials.astro';
+import { getPage, getGalleries, getSessions, getSettings } from '../lib/data';
+import { emph } from '../lib/emph';
+
+const s = await getSettings();
+const home = await getPage('home');
+const galleries = await getGalleries();
+const featured = (galleries.filter((g) => g.data.featured).length ? galleries.filter((g) => g.data.featured) : galleries).slice(0, 3);
+const sessions = (await getSessions()).slice(0, 4);
+---
+<Base transparentHeader image={home.hero_image}>
+  <!-- HERO -->
+  <section class="hero">
+    <Image
+      src={home.hero_image}
+      alt={home.hero_image_alt}
+      widths={[800, 1280, 1920, 2560]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      quality={84}
+      class="hero-img"
+    />
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-copy">
+      {home.hero_label && <p class="eyebrow">{home.hero_label}</p>}
+      <h1 set:html={emph(home.hero_heading)} />
+      <div class="btn-row">
+        <a href="/portfolio" class="btn btn-light">View portfolio</a>
+        <a href="/contact" class="btn">Inquire</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  {(home.intro_label || home.intro_text) && (
+    <section class="intro bg-sand">
+      <div class="narrow center">
+        {home.intro_label && <p class="eyebrow">{home.intro_label}</p>}
+        <hr class="rule" />
+        {home.intro_text && <p class="intro-text">{home.intro_text}</p>}
+      </div>
+    </section>
+  )}
+
+  <!-- SELECTED WORK -->
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 set:html={emph(home.featured_heading)} />
+          <a href="/portfolio" class="text-link">View full portfolio</a>
+        </div>
+        <div class="featured">
+          {featured.map((g, i) => (
+            <div class={`f f${i + 1}`}>
+              <GalleryCard gallery={g} tall={i === 0} sizes="(max-width: 760px) 100vw, 40vw" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ABOUT PREVIEW -->
+  <section class="section bg-white about">
+    <div class="container about-grid">
+      <div class="about-copy">
+        <p class="eyebrow">Meet the photographer</p>
+        <h2 set:html={emph(home.about_heading)} />
+        <hr class="rule" />
+        {home.about_text && <p class="lede">{home.about_text}</p>}
+        <div class="btn-row">
+          <a href="/about" class="btn btn-outline">My story</a>
+        </div>
+      </div>
+      <div class="about-media">
+        <span class="vlabel" aria-hidden="true">{s.business_name}</span>
+        <div class="frame about-photo">
+          <Image src={home.about_image} alt={home.about_image_alt} widths={[500, 800, 1100]} sizes="(max-width: 860px) 90vw, 40vw" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SESSIONS PREVIEW -->
+  {sessions.length > 0 && (
+    <section class="section bg-sand">
+      <div class="container">
+        <div class="section-head">
+          <h2 set:html={emph(home.services_heading)} />
+          <a href="/sessions" class="text-link">Sessions &amp; pricing</a>
+        </div>
+        <ul class="tiles">
+          {sessions.map((x) => (
+            <li>
+              <a href={`/sessions#${x.id}`} class="tile">
+                <div class="frame hover-zoom">
+                  {x.data.image && <Image src={x.data.image} alt="" widths={[400, 700]} sizes="(max-width: 700px) 50vw, 25vw" loading="lazy" />}
+                  <span class="tile-label">{x.data.title}</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="center tiles-cta">
+          <a href="/sessions" class="btn">See sessions &amp; pricing</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- STATEMENT -->
+  {home.statement_text && home.statement_image && (
+    <section class="statement">
+      <Image src={home.statement_image} alt="" widths={[800, 1400, 2200]} sizes="100vw" loading="lazy" class="statement-img" />
+      <div class="statement-shade" aria-hidden="true"></div>
+      <div class="narrow center statement-copy">
+        <p class="display statement-text" set:html={emph(home.statement_text)} />
+      </div>
+    </section>
+  )}
+
+  <Testimonials />
+</Base>
+
+<style>
+  /* Hero */
+  .hero {
+    position: relative; min-height: min(100svh, 980px); height: 100svh; max-height: 980px;
+    display: grid; place-items: center; overflow: hidden; color: var(--white);
+  }
+  @supports not (height: 100svh) { .hero { height: 100vh; } }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(30,24,20,.35) 0%, rgba(30,24,20,.08) 35%, rgba(30,24,20,.45) 100%); }
+  .hero-copy { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 120px var(--gutter) 40px; }
+  .hero-copy .eyebrow { color: var(--ivory); }
+  .hero h1 { font-size: clamp(42px, 8.5vw, 112px); letter-spacing: 0.14em; margin-right: -0.14em; text-shadow: 0 1px 24px rgba(0,0,0,.18); }
+  .hero .btn-row { justify-content: center; margin-top: 8px; }
+
+  /* Intro */
+  .intro { padding-block: clamp(56px, 7vw, 96px); }
+  .intro-text { font-family: var(--serif); font-size: clamp(22px, 2.4vw, 30px); line-height: 1.4; margin: 0; }
+
+  /* Section heads */
+  .section-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; margin-bottom: clamp(36px, 5vw, 64px); }
+
+  /* Featured editorial layout */
+  .featured { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); align-items: start; }
+  .f1 { grid-column: 1 / span 5; }
+  .f2 { grid-column: 7 / span 3; margin-top: clamp(40px, 8vw, 120px); }
+  .f3 { grid-column: 10 / span 3; }
+  @media (max-width: 760px) {
+    .featured { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .f1 { grid-column: 1 / -1; }
+    .f2, .f3 { grid-column: auto; margin-top: 0; }
+  }
+
+  /* About */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 7vw, 112px); align-items: center; }
+  .about-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .about-copy .rule { margin: 6px 0; }
+  .about-copy .btn-row { margin-top: 10px; }
+  .about-media { position: relative; display: flex; gap: 20px; align-items: flex-start; }
+  .about-photo { aspect-ratio: 4 / 5; flex: 1; }
+  .vlabel {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--muted);
+    border-left: 1px solid var(--line); padding-left: 12px;
+  }
+  @media (max-width: 860px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .about-media { order: -1; }
+  }
+
+  /* Session tiles */
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 2vw, 24px); }
+  .tile { display: block; text-decoration: none; color: var(--white); }
+  .tile .frame { aspect-ratio: 3 / 4; }
+  .tile .frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(30,24,20,.5)); }
+  .tile-label {
+    position: absolute; left: 0; right: 0; bottom: 22px; z-index: 1; text-align: center;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.28em; text-transform: uppercase;
+  }
+  .tiles-cta { margin-top: clamp(36px, 5vw, 56px); }
+  @media (max-width: 860px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* Statement */
+  .statement { position: relative; padding-block: clamp(120px, 16vw, 220px); overflow: hidden; color: var(--white); }
+  .statement-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .statement-shade { position: absolute; inset: 0; background: rgba(43, 36, 32, .42); }
+  .statement-copy { position: relative; }
+  .statement-text { font-size: clamp(30px, 4vw, 52px); line-height: 1.2; margin: 0; }
+</style>

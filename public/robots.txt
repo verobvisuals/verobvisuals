@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://verobvisuals.pages.dev/sitemap-index.xml

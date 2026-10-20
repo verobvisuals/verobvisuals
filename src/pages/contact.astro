@@ -1,0 +1,180 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPage, getSessions, getSettings, getFaq, isPlaceholder } from '../lib/data';
+import { emph, paras } from '../lib/emph';
+
+const c = await getPage('contact');
+const s = await getSettings();
+const sessions = await getSessions();
+const faq = await getFaq();
+---
+<Base title="Contact" description={c.seo_description}>
+  <header class="page-head container">
+    <p class="eyebrow">Contact &amp; booking</p>
+    <h1 set:html={emph(c.heading)} />
+    {c.availability && <p class="availability">{c.availability}</p>}
+  </header>
+
+  <section class="container contact-grid">
+    <div class="side">
+      {c.intro && <div class="prose lede" set:html={paras(c.intro)} />}
+      <ol class="steps">
+        <li><span>01</span>Fill in your details</li>
+        <li><span>02</span>Tap the button. Your message is copied and Instagram opens</li>
+        <li><span>03</span>Paste it into our chat and send</li>
+      </ol>
+      <p class="direct">
+        Prefer to write it yourself?<br />
+        <a href={s.instagram.dm} target="_blank" rel="noopener" class="text-link">Message {s.instagram.handle} directly</a>
+      </p>
+    </div>
+
+    <form class="inquiry" id="inquiry" novalidate data-dm={s.instagram.dm}>
+      <div class="row">
+        <div class="field">
+          <label for="f-name">Your name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="f-session">Type of session</label>
+          <select id="f-session" name="session">
+            <option value="">Choose one</option>
+            {sessions.map((x) => <option value={x.data.title}>{x.data.title}</option>)}
+            <option value="Something else">Something else</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-date">Preferred date <span class="opt">(optional)</span></label>
+        <input id="f-date" name="date" type="date" />
+      </div>
+      <div class="field">
+        <label for="f-msg">Tell me about your session</label>
+        <textarea id="f-msg" name="message" placeholder="Locations you love, who's included, the vibe you're going for…"></textarea>
+      </div>
+      <p class="error" id="f-error" role="alert" hidden>Please add your name so I know who's writing.</p>
+      <button type="submit" class="btn submit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg>
+        Copy message &amp; open Instagram
+      </button>
+      <div class="done" id="f-done" hidden>
+        <p class="done-title" tabindex="-1">Your message is ready.</p>
+        <p class="done-text" id="f-done-text">It's copied. In Instagram, tap the message box, then press and hold and choose <strong>Paste</strong>.</p>
+        <label class="visually-hidden" for="f-preview">Your message</label>
+        <textarea id="f-preview" readonly></textarea>
+        <a href={s.instagram.dm} target="_blank" rel="noopener" class="text-link">Open Instagram again</a>
+      </div>
+      <noscript><p>Or simply <a href={s.instagram.dm}>message {s.instagram.handle} on Instagram</a>.</p></noscript>
+    </form>
+  </section>
+
+  {faq.length > 0 && (
+    <section class="section">
+      <div class="narrow">
+        <h2 class="center faq-h">Questions, <em>answered</em></h2>
+        <div class="faq">
+          {faq.map((q) => (
+            <details>
+              <summary>{q.data.question}</summary>
+              <div class="prose" set:html={paras(q.data.answer)} />
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<script>
+  const form = document.getElementById('inquiry') as HTMLFormElement | null;
+  if (form) {
+    const dm = form.dataset.dm!;
+    const sel = form.querySelector<HTMLSelectElement>('#f-session')!;
+    const wanted = new URLSearchParams(location.search).get('session');
+    if (wanted) {
+      const match = Array.from(sel.options).find((o) => o.value.toLowerCase() === wanted.toLowerCase());
+      if (match) sel.value = match.value;
+    }
+    const fmtDate = (v: string) => {
+      if (!v) return '';
+      const [y, m, d] = v.split('-').map(Number);
+      return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    };
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const name = String(data.get('name') || '').trim();
+      const session = String(data.get('session') || '');
+      const date = fmtDate(String(data.get('date') || ''));
+      const msg = String(data.get('message') || '').trim();
+      const err = document.getElementById('f-error')!;
+      const nameInput = form.querySelector<HTMLInputElement>('#f-name')!;
+      if (!name) { err.hidden = false; nameInput.setAttribute('aria-invalid', 'true'); nameInput.focus(); return; }
+      err.hidden = true; nameInput.removeAttribute('aria-invalid');
+
+      const lines = [`Hi! My name is ${name}.`];
+      lines.push(session && session !== 'Something else' ? `I'm interested in booking a ${session} session.` : `I'm interested in booking a photo session.`);
+      if (date) lines.push(`Preferred date: ${date}.`);
+      if (msg) lines.push('', msg);
+      const text = lines.join('\n');
+
+      const preview = document.getElementById('f-preview') as HTMLTextAreaElement;
+      const done = document.getElementById('f-done')!;
+      const doneText = document.getElementById('f-done-text')!;
+      preview.value = text;
+      done.hidden = false;
+
+      const copied = navigator.clipboard?.writeText(text);
+      window.open(dm, '_blank', 'noopener');
+      const fallback = () => {
+        doneText.textContent = "Copy the message below, then paste it into our Instagram chat.";
+        preview.focus(); preview.select();
+      };
+      if (copied) copied.catch(fallback); else fallback();
+      (done.querySelector('.done-title') as HTMLElement).focus();
+    });
+  }
+</script>
+
+<style>
+  .availability {
+    display: inline-block; margin: 22px 0 0; padding: 8px 18px; border: 1px solid var(--taupe);
+    font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+  }
+  .contact-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(40px, 6vw, 96px); align-items: start; padding-bottom: clamp(24px, 4vw, 48px); }
+  .side { display: flex; flex-direction: column; gap: 28px; }
+  .steps { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .steps li { display: flex; gap: 18px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .steps span { font-family: var(--serif); font-style: italic; color: var(--mocha); font-size: 20px; line-height: 1.3; }
+  .direct { margin: 0; color: var(--muted); }
+  .direct .text-link { margin-top: 10px; color: var(--espresso); }
+
+  .inquiry { background: var(--white); padding: clamp(24px, 4vw, 48px); display: flex; flex-direction: column; gap: 22px; border: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .opt { text-transform: none; letter-spacing: 0.02em; font-weight: 400; }
+  .error { margin: 0; color: #8a3324; font-size: 15px; }
+  [aria-invalid='true'] { border-color: #8a3324 !important; }
+  .submit { align-self: flex-start; }
+  .done { border-top: 1px solid var(--line); padding-top: 22px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .done-title { font-family: var(--serif); font-size: 28px; margin: 0; outline: none; }
+  .done-text { margin: 0; color: var(--muted); }
+  .done textarea { width: 100%; min-height: 140px; font: inherit; font-size: 15px; padding: 14px; border: 1px solid var(--line); background: var(--ivory); color: var(--espresso); resize: vertical; }
+
+  .faq-h { margin-bottom: 40px; }
+  .faq { border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    cursor: pointer; list-style: none; padding: 22px 40px 22px 0; position: relative;
+    font-family: var(--serif); font-size: clamp(21px, 2vw, 25px);
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-family: var(--sans); font-weight: 300; font-size: 24px; color: var(--mocha); }
+  .faq details[open] summary::after { content: '–'; }
+  .faq .prose { padding: 0 0 24px; color: var(--muted); }
+
+  @media (max-width: 860px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; }
+    .submit { align-self: stretch; }
+  }
+</style>

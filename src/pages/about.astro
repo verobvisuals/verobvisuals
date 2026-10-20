@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { getPage, getSettings } from '../lib/data';
+import { emph, paras } from '../lib/emph';
+
+const a = await getPage('about');
+const s = await getSettings();
+---
+<Base title="About" description={a.seo_description} image={a.photo}>
+  <section class="section about-hero">
+    <div class="container grid">
+      <div class="media">
+        <span class="vlabel" aria-hidden="true">Meet the photographer</span>
+        <div class="frame photo">
+          <Image src={a.photo} alt={a.photo_alt} widths={[500, 800, 1200]} sizes="(max-width: 860px) 90vw, 45vw" loading="eager" />
+        </div>
+      </div>
+      <div class="copy">
+        <p class="eyebrow">About</p>
+        <h1 set:html={emph(a.heading)} />
+        <hr class="rule" />
+        {a.intro && <div class="prose lede" set:html={paras(a.intro)} />}
+      </div>
+    </div>
+  </section>
+
+  {a.sections.length > 0 && (
+    <section class="section bg-sand">
+      <div class="container story">
+        {a.sections.map((sec, i) => (
+          <article class="chapter">
+            <p class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+            <h2 class="h3" set:html={emph(sec.title)} />
+            <div class="prose" set:html={paras(sec.text)} />
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container closing">
+      {a.second_photo && (
+        <div class="frame second">
+          <Image src={a.second_photo} alt={a.second_photo_alt} widths={[500, 900, 1300]} sizes="(max-width: 860px) 90vw, 50vw" loading="lazy" />
+        </div>
+      )}
+      <div class="closing-copy">
+        <h2>Ready when <em>you</em> are</h2>
+        <hr class="rule" />
+        <div class="btn-row">
+          <a href="/portfolio" class="btn btn-outline">View portfolio</a>
+          <a href="/contact" class="btn">Inquire</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 7vw, 112px); align-items: center; }
+  .media { display: flex; gap: 20px; }
+  .photo { aspect-ratio: 4 / 5; flex: 1; }
+  .vlabel {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 11px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--muted);
+    border-left: 1px solid var(--line); padding-left: 12px; align-self: flex-start;
+  }
+  .copy { display: flex; flex-direction: column; gap: 18px; }
+  .copy h1 { font-size: clamp(42px, 5.6vw, 76px); }
+  .story { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: clamp(40px, 5vw, 72px); }
+  .chapter { display: flex; flex-direction: column; gap: 14px; }
+  .num { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--mocha); margin: 0; border-bottom: 1px solid var(--taupe); padding-bottom: 12px; }
+  .closing { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
+  .second { aspect-ratio: 3 / 2; }
+  .closing-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  @media (max-width: 860px) {
+    .grid, .closing { grid-template-columns: 1fr; }
+  }
+</style>

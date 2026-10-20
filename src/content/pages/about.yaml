@@ -1,0 +1,14 @@
+seo_description: Meet Veronica Butriy, the photographer behind Verobvisuals in Solon, Ohio.
+heading: "Hi, I'm *Veronica*"
+photo: ../../assets/uploads/placeholder-about.jpg
+photo_alt: "Veronica Butriy, the photographer behind Verobvisuals"
+intro: "[A short introduction: who you are and what you photograph.]"
+sections:
+  - title: How it started
+    text: "[How you became interested in photography.]"
+  - title: My style
+    text: "[Your photography style and creative approach.]"
+  - title: What to expect
+    text: "[What clients can expect when working with you, from booking to receiving their photos.]"
+second_photo: ../../assets/uploads/placeholder-portrait-2.jpg
+second_photo_alt: "[Describe this photo]"

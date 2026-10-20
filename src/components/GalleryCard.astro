@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets';
+import { slugify } from '../lib/data';
+
+interface Props {
+  gallery: { id: string; data: { title: string; category: string; cover: ImageMetadata; photos: unknown[] } };
+  sizes?: string;
+  tall?: boolean;
+}
+const { gallery, sizes = '(max-width: 700px) 100vw, 33vw', tall = false } = Astro.props;
+const g = gallery.data;
+---
+<a href={`/portfolio/${gallery.id}`} class="gcard" data-category={slugify(g.category)}>
+  <div class:list={['frame hover-zoom', { tall }]}>
+    <Image src={g.cover} alt="" widths={[400, 700, 1000]} sizes={sizes} loading="lazy" />
+  </div>
+  <div class="meta">
+    <p class="eyebrow">{g.category}</p>
+    <h3>{g.title}</h3>
+  </div>
+</a>
+
+<style>
+  .gcard { display: block; text-decoration: none; color: inherit; }
+  .frame { aspect-ratio: 4 / 5; }
+  .frame.tall { aspect-ratio: 3 / 4; }
+  .meta { padding-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+  h3 { font-size: clamp(24px, 2.2vw, 30px); }
+  .gcard:hover h3 { font-style: italic; }
+</style>

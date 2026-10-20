@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import { getSettings } from '../lib/data';
+
+interface Props { size?: 'sm' | 'md' | 'lg'; }
+const { size = 'md' } = Astro.props;
+const s = await getSettings();
+---
+{s.logo ? (
+  <Image src={s.logo} alt={s.business_name} class={`logo logo-${size}`} widths={[160, 320, 480]} sizes="160px" />
+) : (
+  <span class={`wordmark wordmark-${size}`}>{s.business_name}</span>
+)}
+
+<style>
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    margin-right: -0.32em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .wordmark-sm { font-size: 18px; }
+  .wordmark-md { font-size: clamp(19px, 2vw, 24px); }
+  .wordmark-lg { font-size: clamp(26px, 3vw, 34px); }
+  .logo { width: auto; object-fit: contain; }
+  .logo-sm { height: 36px; }
+  .logo-md { height: 52px; }
+  .logo-lg { height: 72px; }
+</style>

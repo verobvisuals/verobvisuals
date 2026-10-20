@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import GalleryCard from '../../components/GalleryCard.astro';
+import { getGalleries, slugify } from '../../lib/data';
+import { CATEGORIES } from '../../content.config';
+
+const galleries = await getGalleries();
+const used = CATEGORIES.filter((c) => galleries.some((g) => g.data.category === c));
+---
+<Base title="Portfolio" description="Senior, portrait, couples, friendship and milestone photography by Verobvisuals." image={galleries[0]?.data.cover}>
+  <header class="page-head container">
+    <p class="eyebrow">Portfolio</p>
+    <h1>Selected <em>galleries</em></h1>
+  </header>
+
+  {used.length > 1 && (
+    <div class="container filters" role="group" aria-label="Filter galleries by category">
+      <button type="button" data-filter="all" aria-pressed="true">All</button>
+      {used.map((c) => <button type="button" data-filter={slugify(c)} aria-pressed="false">{c}</button>)}
+    </div>
+  )}
+
+  <section class="container galleries-wrap">
+    {galleries.length === 0 ? (
+      <p class="center lede" style="margin-inline:auto">New galleries are coming soon.</p>
+    ) : (
+      <ul class="galleries">
+        {galleries.map((g) => (
+          <li data-category={slugify(g.data.category)}>
+            <GalleryCard gallery={g} sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 33vw" />
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filters button');
+  const cards = document.querySelectorAll<HTMLElement>('.galleries li');
+  const apply = (f: string) => {
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === f)));
+    cards.forEach((c) => { c.hidden = f !== 'all' && c.dataset.category !== f; });
+  };
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const f = b.dataset.filter || 'all';
+      apply(f);
+      history.replaceState(null, '', f === 'all' ? location.pathname : `#${f}`);
+    })
+  );
+  const start = location.hash.slice(1);
+  if (start && Array.from(buttons).some((b) => b.dataset.filter === start)) apply(start);
+</script>
+
+<style>
+  .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 10px; margin-bottom: clamp(40px, 5vw, 64px); }
+  .filters button {
+    min-height: 44px; padding: 0 20px; cursor: pointer;
+    font: inherit; font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--espresso); background: transparent; border: 1px solid var(--line);
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .filters button:hover { border-color: var(--espresso); }
+  .filters button[aria-pressed='true'] { background: var(--espresso); color: var(--ivory); border-color: var(--espresso); }
+  .galleries-wrap { padding-bottom: var(--section); }
+  .galleries {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 4vw, 56px) clamp(20px, 3vw, 40px);
+  }
+  .galleries li:nth-child(3n + 2) { margin-top: clamp(0px, 5vw, 72px); }
+  @media (max-width: 1000px) {
+    .galleries { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .galleries li:nth-child(3n + 2) { margin-top: 0; }
+    .galleries li:nth-child(2n) { margin-top: 48px; }
+  }
+  @media (max-width: 640px) {
+    .galleries { grid-template-columns: 1fr; }
+    .galleries li:nth-child(2n) { margin-top: 0; }
+  }
+</style>
