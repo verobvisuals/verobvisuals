@@ -1,14 +1,40 @@
-seo_description: Meet Veronica Butriy, the photographer behind Verobvisuals in Solon, Ohio.
-heading: "Hi, I'm *Veronica*"
-photo: ../../assets/uploads/placeholder-about.jpg
-photo_alt: "Veronica Butriy, the photographer behind Verobvisuals"
-intro: "[A short introduction: who you are and what you photograph.]"
+heading: Hi, I'm *Veronica*
+photo: ../../assets/uploads/46DE4FB6-6412-4023-9150-6CF0C3DF9185_1_102_o-1.jpeg
+photo_alt: Veronica Butriy, the photographer behind Verobvisuals
+intro: I'm Veronica, a portrait photographer based in Northeast Ohio, serving
+  the Cleveland area and beyond. Through Verobvisuals, I capture seniors,
+  couples, friends, and meaningful milestones. I love finding the little
+  moments, genuine expressions, and unique details that make every person and
+  experience worth remembering.
 sections:
   - title: How it started
     text: "[How you became interested in photography.]"
   - title: My style
-    text: "[Your photography style and creative approach.]"
+    text: My style is a mix of natural moments, creative direction, and attention to
+      the little details. I love using beautiful light, interesting locations,
+      and natural interactions to create images that feel personal rather than
+      overly posed. Whether it's a senior session, couples portraits, or photos
+      with friends, I want every gallery to reflect the people in it and the
+      memories they're making.
   - title: What to expect
-    text: "[What clients can expect when working with you, from booking to receiving their photos.]"
+    text: From your first inquiry to the moment you receive your photos, I want the
+      entire experience to feel easy, personal, and fun. We'll start by
+      discussing your vision, choosing a location, and planning the details of
+      your session. During our time together, I'll guide you with posing and
+      creative ideas while leaving room for natural moments to happen. After
+      your session, I'll carefully edit your images and deliver your final
+      gallery so you can relive your memories and share them with the people who
+      matter most.
+  - title: The little things that inspire me
+    text: I'm inspired by golden-hour light, beautiful locations, the way people
+      connect with each other, and the moments that happen naturally when no one
+      is trying too hard. I love finding new creative ideas, experimenting with
+      different perspectives, and turning an ordinary moment into something
+      worth keeping. Those little details are a big part of what makes
+      photography so special to me.
 second_photo: ../../assets/uploads/placeholder-portrait-2.jpg
 second_photo_alt: "[Describe this photo]"
+seo_description: Meet Veronica Butriy, the photographer behind Verobvisuals in
+  Northeast Ohio. Specializing in senior portraits, couples, friends, and
+  meaningful milestones, Veronica captures authentic moments and memories to
+  last a lifetime.
