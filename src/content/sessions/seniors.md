@@ -1,14 +1,14 @@
 ---
 title: Seniors
-order: 1
+summary: Celebrate your senior year with photos that feel like you. We’ll take
+  our time, try a few spots and outfits, and capture this chapter before it’s
+  gone.
 image: ../../assets/uploads/placeholder-session-seniors.jpg
-summary: "[One sentence describing your senior sessions.]"
-duration: "[Session length]"
-price: "[YOUR PRICE]"
-locations: "[Number of locations]"
-delivery: "[How and when photos are delivered]"
+price: From $150
+duration: 1 or 1.5 hours
 includes:
-  - "[What's included]"
-  - "[What's included]"
-details: ""
+  - "1 hour: $150 "
+  - "1.5 hours: $220"
+order: 1
+hidden: false
 ---
