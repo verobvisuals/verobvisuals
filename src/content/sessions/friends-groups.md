@@ -1,14 +1,15 @@
 ---
 title: Friends & Groups
-order: 4
+summary: Photos with your favorite people, for best friends, siblings, or
+  family. Fun, candid, and full of personality, for groups of 2–4.
 image: ../../assets/uploads/placeholder-session-groups.jpg
-summary: "[One sentence describing your friendship and group sessions.]"
+price: From $220
 duration: "[Session length]"
-price: "[YOUR PRICE]"
 locations: "[Number of locations]"
 delivery: "[How and when photos are delivered]"
 includes:
   - "[What's included]"
   - "[What's included]"
-details: ""
+order: 4
+hidden: false
 ---
