@@ -1,14 +1,13 @@
 ---
 title: Couples
-order: 3
+summary: Relaxed, natural photos of the two of you, for anniversaries,
+  engagements, or just because. I’ll guide you the whole time.
 image: ../../assets/uploads/placeholder-session-couples.jpg
-summary: "[One sentence describing your couples sessions.]"
-duration: "[Session length]"
-price: "[YOUR PRICE]"
-locations: "[Number of locations]"
-delivery: "[How and when photos are delivered]"
+price: From $220
+duration: 1 or 1.5 hours
 includes:
-  - "[What's included]"
-  - "[What's included]"
-details: ""
+  - "1 hour: $220"
+  - "1.5 hours: $320"
+order: 3
+hidden: false
 ---
