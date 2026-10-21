@@ -1,14 +1,13 @@
 ---
-title: Portraits
-order: 2
+title: Individual
+summary: Portraits just for you, for a birthday, a new profile picture, or
+  simply because. Relaxed, natural, and guided the whole way.
 image: ../../assets/uploads/placeholder-session-portraits.jpg
-summary: "[One sentence describing your portrait sessions.]"
-duration: "[Session length]"
-price: "[YOUR PRICE]"
-locations: "[Number of locations]"
-delivery: "[How and when photos are delivered]"
+price: From $150
+duration: 1 or 1.5 hours
 includes:
-  - "[What's included]"
-  - "[What's included]"
-details: ""
+  - "1 hour: $150"
+  - "1.5 hours: $220"
+order: 2
+hidden: false
 ---
