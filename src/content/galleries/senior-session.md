@@ -9,10 +9,10 @@ featured: true
 hidden: false
 order: 1
 photos:
-  - image: ../../assets/uploads/20BD9695-5828-484E-B587-DCD2F70EF4D2_1_105_c-2.jpeg
-  - image: ../../assets/uploads/4E127796-7650-498C-8276-AC3DAC479874_1_105_c.jpeg
-  - image: ../../assets/uploads/4FF8AD64-D579-42DE-80A6-DAD8EAE33D77_1_105_c.jpeg
-  - image: ../../assets/uploads/5B753357-6CFF-47CA-AB1C-C64DF12911A7_1_105_c.jpeg
-  - image: ../../assets/uploads/3CEFD14A-9C86-4328-8B8F-C34DEC4FA090_1_105_c.jpeg
-  - image: ../../assets/uploads/E5804AE6-6BA9-4701-9AB8-52593C1E3CEA_1_105_c.jpeg
+  - image: ../../assets/uploads/20BD9695-5828-484E-B587-DCD2F70EF4D2_1_105_c-3.jpeg
+  - image: ../../assets/uploads/4E127796-7650-498C-8276-AC3DAC479874_1_105_c-1.jpeg
+  - image: ../../assets/uploads/2F889020-B3D4-41F5-AF16-DD011CCD90A9_1_105_c.jpeg
+  - image: ../../assets/uploads/5B753357-6CFF-47CA-AB1C-C64DF12911A7_1_105_c-1.jpeg
+  - image: ../../assets/uploads/3CEFD14A-9C86-4328-8B8F-C34DEC4FA090_1_105_c-1.jpeg
+  - image: ../../assets/uploads/E5804AE6-6BA9-4701-9AB8-52593C1E3CEA_1_105_c-1.jpeg
 ---
