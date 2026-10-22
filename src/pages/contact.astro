@@ -20,8 +20,8 @@ const faq = await getFaq();
       {c.intro && <div class="prose lede" set:html={paras(c.intro)} />}
       <ol class="steps">
         <li><span>01</span>Fill in your details</li>
-        <li><span>02</span>Tap the button. Your message is copied and Instagram opens</li>
-        <li><span>03</span>Paste it into our chat and send</li>
+        <li><span>02</span>Tap “Copy my message”</li>
+        <li><span>03</span>Tap “Open Instagram”, then paste it into a DM and send</li>
       </ol>
       <p class="direct">
         Prefer to write it yourself?<br />
@@ -29,7 +29,7 @@ const faq = await getFaq();
       </p>
     </div>
 
-    <form class="inquiry" id="inquiry" novalidate data-dm={s.instagram.dm}>
+    <form class="inquiry" id="inquiry" novalidate>
       <div class="row">
         <div class="field">
           <label for="f-name">Your name</label>
@@ -55,14 +55,14 @@ const faq = await getFaq();
       <p class="error" id="f-error" role="alert" hidden>Please add your name so I know who's writing.</p>
       <button type="submit" class="btn submit">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/></svg>
-        Copy message &amp; open Instagram
+        Copy my message
       </button>
       <div class="done" id="f-done" hidden>
-        <p class="done-title" tabindex="-1">Your message is ready.</p>
-        <p class="done-text" id="f-done-text">It's copied. In Instagram, tap the message box, then press and hold and choose <strong>Paste</strong>.</p>
+        <p class="done-title" id="f-done-title" tabindex="-1">Message copied</p>
+        <p class="done-text" id="f-done-text">Now open Instagram, tap the message box, then press and hold and choose <strong>Paste</strong>.</p>
         <label class="visually-hidden" for="f-preview">Your message</label>
         <textarea id="f-preview" readonly></textarea>
-        <a href={s.instagram.dm} target="_blank" rel="noopener" class="text-link">Open Instagram again</a>
+        <a href={s.instagram.dm} target="_blank" rel="noopener" class="btn open-ig">Open Instagram</a>
       </div>
       <noscript><p>Or simply <a href={s.instagram.dm}>message {s.instagram.handle} on Instagram</a>.</p></noscript>
     </form>
@@ -88,7 +88,6 @@ const faq = await getFaq();
 <script>
   const form = document.getElementById('inquiry') as HTMLFormElement | null;
   if (form) {
-    const dm = form.dataset.dm!;
     const sel = form.querySelector<HTMLSelectElement>('#f-session')!;
     const wanted = new URLSearchParams(location.search).get('session');
     if (wanted) {
@@ -120,18 +119,39 @@ const faq = await getFaq();
 
       const preview = document.getElementById('f-preview') as HTMLTextAreaElement;
       const done = document.getElementById('f-done')!;
+      const doneTitle = document.getElementById('f-done-title')!;
       const doneText = document.getElementById('f-done-text')!;
       preview.value = text;
       done.hidden = false;
 
-      const copied = navigator.clipboard?.writeText(text);
-      window.open(dm, '_blank', 'noopener');
-      const fallback = () => {
-        doneText.textContent = "Copy the message below, then paste it into our Instagram chat.";
-        preview.focus(); preview.select();
+      // Older method: copy whatever is selected in the box. Works where the newer one is blocked.
+      const legacyCopy = () => {
+        preview.focus();
+        preview.select();
+        preview.setSelectionRange(0, text.length);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch { ok = false; }
+        window.getSelection()?.removeAllRanges();
+        return ok;
       };
-      if (copied) copied.catch(fallback); else fallback();
-      (done.querySelector('.done-title') as HTMLElement).focus();
+      const showResult = (ok: boolean) => {
+        if (ok) {
+          doneTitle.textContent = 'Message copied';
+          doneText.innerHTML = 'Now open Instagram, tap the message box, then press and hold and choose <strong>Paste</strong>.';
+        } else {
+          doneTitle.textContent = 'Your message is ready';
+          doneText.textContent = 'Copy the message below (press and hold, then Copy), then open Instagram and paste it into a DM.';
+          preview.focus();
+          preview.select();
+          return;
+        }
+        doneTitle.focus();
+      };
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => showResult(true), () => showResult(legacyCopy()));
+      } else {
+        showResult(legacyCopy());
+      }
     });
   }
 </script>
@@ -158,6 +178,7 @@ const faq = await getFaq();
   .done { border-top: 1px solid var(--line); padding-top: 22px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
   .done-title { font-family: var(--serif); font-size: 28px; margin: 0; outline: none; }
   .done-text { margin: 0; color: var(--muted); }
+  .open-ig { margin-top: 4px; }
   .done textarea { width: 100%; min-height: 140px; font: inherit; font-size: 15px; padding: 14px; border: 1px solid var(--line); background: var(--ivory); color: var(--espresso); resize: vertical; }
 
   .faq-h { margin-bottom: 40px; }
