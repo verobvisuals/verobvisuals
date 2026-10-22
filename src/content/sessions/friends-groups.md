@@ -11,6 +11,6 @@ includes:
   - "4 people: 1 hr $320 · 1.5 hrs $480 · 2 hrs $640"
   - "5 people: 1 hr $360 · 1.5 hrs $540 · 2 hrs $720"
   - "6 people: 1 hr $400 · 1.5 hrs $600 · 2 hrs $800"
-order: 4
+order: 5
 hidden: false
 ---
