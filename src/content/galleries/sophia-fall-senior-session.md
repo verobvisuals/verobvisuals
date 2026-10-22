@@ -7,6 +7,7 @@ description: "A two-look senior session: a sunlit downtown stroll among flowers,
 cover: ../../assets/uploads/ED32A683-F739-4FCE-BB48-F99FF3CAF36D_1_105_c.jpeg
 featured: false
 hidden: false
+order: 3
 photos:
   - image: ../../assets/uploads/77127152-CA9B-4400-A168-1EF3774C7928_1_105_c.jpeg
   - image: ../../assets/uploads/E208F20E-C50E-4D1D-860C-D1E89B27F419_1_105_c.jpeg
