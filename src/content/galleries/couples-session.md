@@ -5,7 +5,7 @@ description: "[A sentence about this session: who, where, the feeling.]"
 cover: ../../assets/uploads/AE51C61B-6766-4044-8299-776504515DC1_1_105_c.jpeg
 featured: false
 hidden: false
-order: 3
+order: 7
 photos:
   - image: ../../assets/uploads/C1F12F22-71C5-41F2-9C16-7D08EA8397B7_1_105_c.jpeg
   - image: ../../assets/uploads/C6DC0C04-953F-439F-95D2-9AA86565D65B_1_105_c.jpeg
