@@ -8,5 +8,5 @@ includes:
   - "1 hour: $220"
   - "1.5 hours: $320"
 order: 4
-hidden: false
+hidden: true
 ---
