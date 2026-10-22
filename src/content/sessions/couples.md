@@ -7,6 +7,6 @@ duration: 1 or 1.5 hours
 includes:
   - "1 hour: $220"
   - "1.5 hours: $320"
-order: 3
+order: 4
 hidden: false
 ---
