@@ -1,7 +1,9 @@
 ---
 title: Lake Erie Senior Session
 category: Seniors
-description: "[A sentence about this session: who, where, the feeling.]"
+description: "A breezy senior session on the shores of Lake Erie: windswept
+  hair, crashing waves and soft golden light, for photos that feel carefree and
+  summery."
 cover: ../../assets/uploads/AE51C61B-6766-4044-8299-776504515DC1_1_105_c.jpeg
 featured: false
 hidden: false
