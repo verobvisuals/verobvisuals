@@ -4,7 +4,7 @@ category: Portraits
 description: "Late-summer golden hour in an open meadow: warm light, a cream
   dress, and quiet, dreamy moments."
 cover: ../../assets/uploads/C51ADC33-2C6E-4118-AAF4-19A1DF38C253_1_105_c.jpeg
-featured: false
+featured: true
 hidden: false
 photos:
   - image: ../../assets/uploads/9B672E26-FF3B-435E-8A0B-FB57D8AA8336_1_105_c.jpeg
