@@ -14,4 +14,5 @@ photos:
   - image: ../../assets/uploads/1C483273-D561-4C43-8A0B-EE1725C44CF1_1_105_c.jpeg
   - image: ../../assets/uploads/280EC97C-785D-45BC-973A-E97FA5ABA183_1_105_c.jpeg
   - image: ../../assets/uploads/0FCB8317-FEDF-422B-934E-1758E9AF7F44_1_105_c.jpeg
+  - image: ../../assets/uploads/852F3D18-6445-4DDD-B531-30590CC9509B_1_105_c.jpeg
 ---
